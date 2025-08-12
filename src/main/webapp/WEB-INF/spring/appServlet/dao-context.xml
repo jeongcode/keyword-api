@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://mybatis.org/schema/mybatis-spring
+		http://mybatis.org/schema/mybatis-spring.xsd">
+
+	<context:property-placeholder
+		location="/WEB-INF/props/jdbc.properties" />
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName"
+			value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:mappers/**/*.xml"/>
+	</bean>
+
+	<!-- @Mapper 붙이는 대신에 생성하는 것. -->
+	<mybatis-spring:scan base-package="com.sj.mappers"></mybatis-spring:scan>
+  
+  
+	<!-- <bean id="sessionFactory" 
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"> 
+			<property name="dataSource" ref="dataSource"></property> 
+			<property name="packagesToScan"> 
+				<list> <value>kr.ac.hansung.model</value> </list> </property> 
+			<property name="hibernateProperties"> 
+				<props> 
+					<prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop> 
+					<prop key="hibernate.hbm2ddl.auto">update</prop> <prop key="hibernate.show_sql">true</prop> 
+					<prop key="hibernate.format_sql">false</prop> 
+				</props> 
+			</property> 
+		</bean> -->
+
+	<!-- 정상 수행 시 commit , 그렇지 않은 경우 rollback -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- 어노테이션 기반 트랜잭션 설정 -->
+	<tx:annotation-driven
+		transaction-manager="transactionManager" />
+
+	<!-- <bean id="transactionManager1" 
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager"> 
+		<property name="sessionFactory" ref="sessionFactory"></property> 
+		</bean> -->
+
+	<context:component-scan
+		base-package="com.sj.repository">
+	</context:component-scan>
+	<context:component-scan
+		base-package="com.sj.config">
+	</context:component-scan>
+	
+
+</beans>

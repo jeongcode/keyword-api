@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper 
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.sj.mappers.KeywordMapper">
+
+  <select id="getKeywords" resultType="com.sj.model.Keyword">
+    select id,
+        word,
+        to_char(create_at, 'YYYY-MM-DD HH24:MI:SS') as createAt,
+        to_char(updated_timestamp, 'YYYY-MM-DD HH24:MI:SS') as updateAt,
+        relation_urls as relationUrls
+    from keyword.words
+    where is_deleted = 'F'
+  </select>
+  
+  <insert id="insertWord"  >
+    INSERT INTO keyword.words
+	(word, is_deleted)
+	VALUES(#{keyword}, 'F')
+  </insert>
+  
+  <update id="updateWord"  >
+    UPDATE keyword.words
+	SET is_deleted = 'T'
+	WHERE id=#{keyword_id}::INTEGER;
+  </update>
+  
+  <select id="getRelatedKeyword" resultType="java.lang.String" parameterType="string">
+    select 
+        relation_urls as relationUrls
+    from keyword.words
+    where word= #{keyword}
+  </select>
+  
+  <select id="getRelatedKeywordHistory" resultType="com.sj.model.KeywordHistory" parameterType="string">
+    select id,
+        word,
+        create_at as createAt,
+        relation_urls as relationUrls,
+        to_char(insert_timestamp, 'YYYY-MM-DD HH24:MI:SS') as insert_timestamp
+    from keyword.words_history
+    where word= #{keyword}
+    order by insert_timestamp desc
+  </select>
+</mapper>
