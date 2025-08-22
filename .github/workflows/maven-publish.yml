@@ -34,6 +34,7 @@ jobs:
   #     run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
   #     env:
   #       GITHUB_TOKEN: ${{ github.token }}
+  environment: main
   build_and_deploy:
     runs-on: ubuntu-latest
 
