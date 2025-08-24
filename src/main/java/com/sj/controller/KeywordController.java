@@ -19,7 +19,7 @@ import com.sj.model.KeywordHistory;
 import com.sj.service.KeywordService;
 import com.sj.service.OpenSearchService;
 
-@CrossOrigin(origins = "http://localhost:3000") 
+@CrossOrigin(origins = "*") 
 @RestController
 public class KeywordController {
 	
