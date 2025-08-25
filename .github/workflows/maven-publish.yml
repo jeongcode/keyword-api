@@ -67,5 +67,5 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/keyword-api-app:latest
             docker stop keyword-api-app || true
             docker rm keyword-api-app || true
-            docker run -d --name keyword-api-app -p 9090:9090 -v /usr/local/hostconf/server.xml:/usr/local/tomcat/conf/server.xml ${{ secrets.DOCKERHUB_USERNAME }}/keyword-api-app:latest
+            docker run -d --name keyword-api-app -p 9090:9090 -v /usr/local/hostconf/server.xml:/usr/local/tomcat/conf/server.xml -e RDS_ENDPOINT=${{secrets.RDS_ENDPOINT}} -e RDS_USERNAME=${{secrets.RDS_USERNAME}} -e RDS_PASSWORD=${{secrets.RDS_PASSWORD}} ${{ secrets.DOCKERHUB_USERNAME }}/keyword-api-app:latest
 
